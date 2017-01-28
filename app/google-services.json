@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "528642684926",
+    "firebase_url": "https://demofcm-eda14.firebaseio.com",
+    "project_id": "demofcm-eda14",
+    "storage_bucket": "demofcm-eda14.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528642684926:android:aea6800dc5c4e6e4",
+        "android_client_info": {
+          "package_name": "com.example.kopite.curvedactionbar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "528642684926-gghjbpd5o23m8coti7cng8fq31eef7pp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kopite.curvedactionbar",
+            "certificate_hash": "B33DF534CD98D9E7E27DE6E12FDF94C8EE670757"
+          }
+        },
+        {
+          "client_id": "528642684926-uebcu8eru4a24jo30f6eulh6t2m30n9t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSSioZNhtmS5RBfo5cf223VrBTtZj2BZo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "528642684926-uebcu8eru4a24jo30f6eulh6t2m30n9t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
