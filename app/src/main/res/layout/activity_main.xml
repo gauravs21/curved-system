@@ -57,18 +57,25 @@
         android:layout_height="wrap_content"
         android:text="Hello World!" />
 
-    <android.support.v7.widget.SwitchCompat
+    <SurfaceView
+        android:visibility="gone"
+        android:background="#fff"
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-        android:layout_marginTop="150dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/switch2" />
+    <!--<android.support.v7.widget.SwitchCompat-->
 
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="170dp" />
+        <!--android:layout_marginTop="150dp"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/switch2" />-->
+
+    <!--<Switch-->
+        <!--android:id="@+id/switch1"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="170dp" />-->
 </android.support.design.widget.CoordinatorLayout>

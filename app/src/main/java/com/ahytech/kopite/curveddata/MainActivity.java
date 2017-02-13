@@ -13,11 +13,11 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     Sensor mSensor;
 
 
-    Switch OnOff;
+//    Switch OnOff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,21 +43,21 @@ public class MainActivity extends AppCompatActivity {
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 
-        OnOff = (Switch) findViewById(R.id.switch1);
-
-        OnOff.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                if (OnOff.isChecked()) {
-                    Toast.makeText(MainActivity.this, "Switch is on", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(MainActivity.this, "Switch is Off", Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
+//        OnOff = (Switch) findViewById(R.id.switch1);
+//
+//        OnOff.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//
+//                if (OnOff.isChecked()) {
+//                    Toast.makeText(MainActivity.this, "Switch is on", Toast.LENGTH_LONG).show();
+//                } else {
+//                    Toast.makeText(MainActivity.this, "Switch is Off", Toast.LENGTH_LONG).show();
+//                }
+//
+//            }
+//        });
         linearLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -70,9 +70,50 @@ public class MainActivity extends AppCompatActivity {
 //                int startY = offsetViewBounds.top;
                 Log.e("DB", "startX " + startPointX + " startY " + startPointY + " midX " + maxPointX + " midY " + maxPointY +
                         " endX " + endPointX + " endY " + endPointY);
+//
+//                drawView = new SinWave(header);
+//                setContentView(drawView);
 
-                drawView = new SinWave(header);
 //                header.setBackground(drawView);
+
+
+                SurfaceView surface = (SurfaceView) findViewById(R.id.surfaceView);
+                surface.getHolder().addCallback(new SurfaceHolder.Callback() {
+                    @Override
+                    public void surfaceCreated(SurfaceHolder holder) {
+                        Canvas canvas=holder.lockCanvas();
+                        Paint paint = new Paint() {
+                            {
+                                setStyle(Style.FILL_AND_STROKE);
+                                setStrokeCap(Paint.Cap.ROUND);
+//                    setStrokeWidth(5.0f);
+                                setAntiAlias(true);
+                                setColor(Color.BLACK);
+                            }
+                        };
+                        final Path path = new Path();
+                        path.moveTo(0, endPointY);
+//            path.quadTo((startPointX + endPointX)/2, 20, endPointX, endPointY);
+                        path.cubicTo(startPointX, endPointY, (startPointX + endPointX) / 2, endPointY - 50, endPointX, endPointY);
+                        path.moveTo(0, endPointY + 20);
+
+                        path.cubicTo(startPointX, endPointY + 20, (startPointX + endPointX) / 2, endPointY + 70, endPointX, endPointY + 20);
+
+                        canvas.drawPath(path, paint);
+                        holder.unlockCanvasAndPost(canvas);
+
+                    }
+
+                    @Override
+                    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+                    }
+
+                    @Override
+                    public void surfaceDestroyed(SurfaceHolder holder) {
+
+                    }
+                });
             }
         });
     }
