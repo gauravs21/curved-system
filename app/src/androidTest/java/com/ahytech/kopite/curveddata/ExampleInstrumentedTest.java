@@ -1,4 +1,4 @@
-package com.example.kopite.curvedactionbar;
+package com.ahytech.kopite.curveddata;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

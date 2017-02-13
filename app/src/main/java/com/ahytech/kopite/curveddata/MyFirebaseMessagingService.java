@@ -1,7 +1,6 @@
-package com.example.kopite.curvedactionbar;
+package com.ahytech.kopite.curveddata;
 
 
-import android.os.Debug;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -11,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by kopite on 13/1/17.

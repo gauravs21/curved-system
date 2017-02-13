@@ -1,4 +1,4 @@
-package com.example.kopite.curvedactionbar;
+package com.ahytech.kopite.curveddata;
 
 import org.junit.Test;
 
