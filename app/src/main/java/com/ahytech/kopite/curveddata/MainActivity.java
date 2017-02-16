@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
@@ -13,20 +14,21 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.Display;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     TextView header;
-    LinearLayout linearLayout;
-    AppBarLayout appBarLayout;
+    RelativeLayout linearLayout;
+    //    RelativeLayout relativeLayout;
+//    AppBarLayout appBarLayout;
     int startPointX, startPointY, endPointX, endPointY, maxPointX, maxPointY;
     float scale;
-    SinWave drawView;
+    Curve drawView;
     SensorManager mSensorManager;
     Sensor mSensor;
 
@@ -37,30 +39,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        linearLayout = (LinearLayout) findViewById(R.id.linearLayout_parent);
+        linearLayout = (RelativeLayout) findViewById(R.id.linearLayout_parent);
+//        relativeLayout=(RelativeLayout)findViewById(R.id.relativeLayout);
         header = (TextView) findViewById(R.id.textView_header);
-        appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
+//        appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 
-//        OnOff = (Switch) findViewById(R.id.switch1);
-//
-//        OnOff.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (OnOff.isChecked()) {
-//                    Toast.makeText(MainActivity.this, "Switch is on", Toast.LENGTH_LONG).show();
-//                } else {
-//                    Toast.makeText(MainActivity.this, "Switch is Off", Toast.LENGTH_LONG).show();
-//                }
-//
-//            }
-//        });
-        linearLayout.post(new Runnable() {
+        header.post(new Runnable() {
             @Override
             public void run() {
+
                 startPointX = header.getLeft();
                 startPointY = header.getTop();
                 endPointX = header.getRight();
@@ -70,50 +59,26 @@ public class MainActivity extends AppCompatActivity {
 //                int startY = offsetViewBounds.top;
                 Log.e("DB", "startX " + startPointX + " startY " + startPointY + " midX " + maxPointX + " midY " + maxPointY +
                         " endX " + endPointX + " endY " + endPointY);
-//
-//                drawView = new SinWave(header);
+
+                drawView = new Curve(MainActivity.this);
+
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, startPointY + endPointY);
+                params.addRule(RelativeLayout.ALIGN_BOTTOM, header.getId());
+                drawView.setLayoutParams(params);
+                linearLayout.addView(drawView);
+//                linearLayout.bringToFront();
+                header.bringToFront();
+
+
+//                RelativeLayout.LayoutParams layoutParams=(new RelativeLayout.LayoutParams(
+//                        ViewGroup.LayoutParams.WRAP_CONTENT,
+//                        ViewGroup.LayoutParams.WRAP_CONTENT));
+
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    header.setForeground(drawView);
+//                }
 //                setContentView(drawView);
-
-//                header.setBackground(drawView);
-
-
-                SurfaceView surface = (SurfaceView) findViewById(R.id.surfaceView);
-                surface.getHolder().addCallback(new SurfaceHolder.Callback() {
-                    @Override
-                    public void surfaceCreated(SurfaceHolder holder) {
-                        Canvas canvas=holder.lockCanvas();
-                        Paint paint = new Paint() {
-                            {
-                                setStyle(Style.FILL_AND_STROKE);
-                                setStrokeCap(Paint.Cap.ROUND);
-//                    setStrokeWidth(5.0f);
-                                setAntiAlias(true);
-                                setColor(Color.BLACK);
-                            }
-                        };
-                        final Path path = new Path();
-                        path.moveTo(0, endPointY);
-//            path.quadTo((startPointX + endPointX)/2, 20, endPointX, endPointY);
-                        path.cubicTo(startPointX, endPointY, (startPointX + endPointX) / 2, endPointY - 50, endPointX, endPointY);
-                        path.moveTo(0, endPointY + 20);
-
-                        path.cubicTo(startPointX, endPointY + 20, (startPointX + endPointX) / 2, endPointY + 70, endPointX, endPointY + 20);
-
-                        canvas.drawPath(path, paint);
-                        holder.unlockCanvasAndPost(canvas);
-
-                    }
-
-                    @Override
-                    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-                    }
-
-                    @Override
-                    public void surfaceDestroyed(SurfaceHolder holder) {
-
-                    }
-                });
             }
         });
     }
@@ -192,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 ////        canvas.drawPath(path, paint);
 //    }
 
-    public class SinWave extends View {
+    public class Curve extends View {
 
         private float first_X = 50;
         private float first_Y = 230;
@@ -200,36 +165,52 @@ public class MainActivity extends AppCompatActivity {
         private float end_Y = 230;
         private float Max = 50;
 
-        public SinWave(Context context, AttributeSet attrs) {
+        public Curve(Context context, AttributeSet attrs) {
             super(context, attrs);
         }
 
-        public SinWave(TextView textView) {
-            super(MainActivity.this);
+        public Curve(MainActivity context) {
+            super(context);
+
         }
 
         @SuppressLint("DrawAllocation")
         @Override
         protected void onDraw(Canvas canvas) {
+
             super.onDraw(canvas);
+
+            //get last coordinates of screen
+            Display display = getWindowManager().getDefaultDisplay();
+            Point displayPoint = new Point();
+            display.getSize(displayPoint);
+            int maxX = displayPoint.x;
+            int maxY = displayPoint.y;
             Paint paint = new Paint() {
                 {
-                    setStyle(Style.FILL_AND_STROKE);
+                    setStyle(Style.FILL);
                     setStrokeCap(Paint.Cap.ROUND);
 //                    setStrokeWidth(5.0f);
                     setAntiAlias(true);
-                    setColor(Color.BLACK);
+                    setColor(Color.WHITE);
                 }
             };
             final Path path = new Path();
-            path.moveTo(0, endPointY);
-//            path.quadTo((startPointX + endPointX)/2, 20, endPointX, endPointY);
-            path.cubicTo(startPointX, endPointY, (startPointX + endPointX) / 2, endPointY - 50, endPointX, endPointY);
-            path.moveTo(0, endPointY + 20);
+            float scale = MainActivity.this.getResources().getDisplayMetrics().density;
+            path.moveTo(startPointX, startPointY);
+            path.quadTo(startPointX, startPointY, endPointX, startPointY);
+//            path.cubicTo(startPointX, startPointY,//starting point
+//                    (startPointX + endPointX) / 2, startPointY - (30*scale+0.5f), //mid point
+//                    endPointX, startPointY);//end point
 
-            path.cubicTo(startPointX, endPointY + 20, (startPointX + endPointX) / 2, endPointY + 70, endPointX, endPointY + 20);
+            path.rMoveTo(maxX, startPointY);
+//            path.moveTo(0, endPointY + (20*scale+0.5f));
+//
+//            path.cubicTo(startPointX, endPointY + (20*scale+0.5f), (startPointX + endPointX) / 2, endPointY + (70*scale+0.5f), endPointX, endPointY + (20*scale+0.5f));
 
             canvas.drawPath(path, paint);
         }
     }
+
+
 }
