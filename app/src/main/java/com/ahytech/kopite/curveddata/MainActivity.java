@@ -197,18 +197,27 @@ public class MainActivity extends AppCompatActivity {
             };
             final Path path = new Path();
             float scale = MainActivity.this.getResources().getDisplayMetrics().density;
-            path.moveTo(startPointX, startPointY);
-            path.quadTo(startPointX, startPointY, endPointX, startPointY);
-//            path.cubicTo(startPointX, startPointY,//starting point
-//                    (startPointX + endPointX) / 2, startPointY - (30*scale+0.5f), //mid point
-//                    endPointX, startPointY);//end point
+            path.moveTo(startPointX- (32 * scale + 0.5f) , startPointY);
+            path.cubicTo(startPointX, startPointY,//starting point
+                    (startPointX + endPointX) / 2, startPointY - (30 * scale + 0.5f), //mid point
+                    endPointX, startPointY);//end point
+            path.moveTo((endPointX + (32 * scale + 0.5f)), startPointY);
+            path.cubicTo(endPointX, startPointY,
+                    (startPointX + endPointX) / 2, startPointY - (30 * scale + 0.5f), //mid point
+                    startPointX, startPointY
+            );
 
-            path.rMoveTo(maxX, startPointY);
+            canvas.drawPath(path,paint);
+
+
+//            Path2D.Double path1 = new Path2D.Double();
+
+//            path.rMoveTo(maxX, startPointY);
 //            path.moveTo(0, endPointY + (20*scale+0.5f));
 //
 //            path.cubicTo(startPointX, endPointY + (20*scale+0.5f), (startPointX + endPointX) / 2, endPointY + (70*scale+0.5f), endPointX, endPointY + (20*scale+0.5f));
 
-            canvas.drawPath(path, paint);
+
         }
     }
 
