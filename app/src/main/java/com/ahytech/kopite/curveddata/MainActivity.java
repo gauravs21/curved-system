@@ -7,10 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -23,51 +20,30 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     TextView header;
-    RelativeLayout linearLayout;
-    //    RelativeLayout relativeLayout;
-//    AppBarLayout appBarLayout;
-    int startPointX, startPointY, endPointX, endPointY, maxPointX, maxPointY;
-    float scale;
+    RelativeLayout relativeLayout;
+    int startPointX, startPointY, endPointX, endPointY;
     Curve drawView;
-    SensorManager mSensorManager;
-    Sensor mSensor;
-
-
-//    Switch OnOff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        linearLayout = (RelativeLayout) findViewById(R.id.linearLayout_parent);
-//        relativeLayout=(RelativeLayout)findViewById(R.id.relativeLayout);
+        relativeLayout = (RelativeLayout) findViewById(R.id.linearLayout_parent);
         header = (TextView) findViewById(R.id.textView_header);
-//        appBarLayout = (AppBarLayout) findViewById(R.id.appBar);
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-
         header.post(new Runnable() {
             @Override
             public void run() {
-
                 startPointX = header.getLeft();
                 startPointY = header.getTop();
                 endPointX = header.getRight();
                 endPointY = header.getBottom();
-                maxPointY = maxPointX = (int) (/*(header.getX() + header.getWidth() / 2) + */(16 * scale + 0.5));
-//                maxPointX = (int) offsetViewBounds.centerY();
-//                int startY = offsetViewBounds.top;
-                Log.e("DB", "startX " + startPointX + " startY " + startPointY + " midX " + maxPointX + " midY " + maxPointY +
-                        " endX " + endPointX + " endY " + endPointY);
-
                 drawView = new Curve(MainActivity.this);
 
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, startPointY + endPointY);
                 params.addRule(RelativeLayout.ALIGN_BOTTOM, header.getId());
                 drawView.setLayoutParams(params);
-                linearLayout.addView(drawView);
-//                linearLayout.bringToFront();
+                relativeLayout.addView(drawView);
                 header.bringToFront();
 
 
@@ -96,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 //        int height = appBarLayout.getHeight();
 //        Log.e("DB", String.valueOf(height));
 //        Rect offsetViewBounds = new Rect();
-////        linearLayout.offsetDescendantRectToMyCoords(header, offsetViewBounds);
+////        relativeLayout.offsetDescendantRectToMyCoords(header, offsetViewBounds);
 ////        header.getGlobalVisibleRect(offsetViewBounds);
 ////        header.getDrawingRect(offsetViewBounds);
 //        header.getLocalVisibleRect(offsetViewBounds);
@@ -159,12 +135,6 @@ public class MainActivity extends AppCompatActivity {
 
     public class Curve extends View {
 
-        private float first_X = 50;
-        private float first_Y = 230;
-        private float end_X = 100;
-        private float end_Y = 230;
-        private float Max = 50;
-
         public Curve(Context context, AttributeSet attrs) {
             super(context, attrs);
         }
@@ -186,40 +156,43 @@ public class MainActivity extends AppCompatActivity {
             display.getSize(displayPoint);
             int maxX = displayPoint.x;
             int maxY = displayPoint.y;
+            Log.d("DB", maxX + " " + maxY);
             Paint paint = new Paint() {
                 {
                     setStyle(Style.FILL);
                     setStrokeCap(Paint.Cap.ROUND);
-//                    setStrokeWidth(5.0f);
                     setAntiAlias(true);
                     setColor(Color.WHITE);
                 }
             };
+
             final Path path = new Path();
             float scale = MainActivity.this.getResources().getDisplayMetrics().density;
-            path.moveTo(startPointX- (32 * scale + 0.5f) , startPointY);
-            path.cubicTo(startPointX, startPointY,//starting point
+            path.moveTo(startPointX - (32 * scale + 0.5f), startPointY);
+
+            path.cubicTo(startPointX, startPointY + (2 * scale + 0.5f),//starting point
                     (startPointX + endPointX) / 2, startPointY - (30 * scale + 0.5f), //mid point
-                    endPointX, startPointY);//end point
-            path.moveTo((endPointX + (32 * scale + 0.5f)), startPointY);
-            path.cubicTo(endPointX, startPointY,
+                    endPointX, startPointY + (2 * scale + 0.5f));//end point
+
+            canvas.drawPath(path, paint);
+
+            //new path to draw the symmetric curve from both end
+            Path newPath = new Path();
+            newPath.moveTo((endPointX + (32 * scale + 0.5f)), startPointY);
+
+            newPath.cubicTo(endPointX, startPointY + (2 * scale + 0.5f),
                     (startPointX + endPointX) / 2, startPointY - (30 * scale + 0.5f), //mid point
-                    startPointX, startPointY
-            );
+                    startPointX, startPointY + (2 * scale + 0.5f));
 
-            canvas.drawPath(path,paint);
-
-
-//            Path2D.Double path1 = new Path2D.Double();
-
-//            path.rMoveTo(maxX, startPointY);
-//            path.moveTo(0, endPointY + (20*scale+0.5f));
-//
-//            path.cubicTo(startPointX, endPointY + (20*scale+0.5f), (startPointX + endPointX) / 2, endPointY + (70*scale+0.5f), endPointX, endPointY + (20*scale+0.5f));
-
-
+            Paint newPaint = new Paint() {
+                {
+                    setStyle(Style.FILL);
+                    setStrokeCap(Paint.Cap.ROUND);
+                    setAntiAlias(true);
+                    setColor(Color.WHITE);
+                }
+            };
+            canvas.drawPath(newPath, newPaint);
         }
     }
-
-
 }
